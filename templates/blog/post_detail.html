@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ post.title }}</h1>
+
+{% if post.featured_image %}
+<img src="{{ post.featured_image.url }}" width="400">
+{% endif %}
+
+<p>
+Author:
+<a href="{% url 'author_profile' post.author.username %}">
+{{ post.author.username }}
+</a>
+</p>
+
+<p>Category: {{ post.category }}</p>
+
+<p>Views: {{ post.view_count }}</p>
+
+<p>Likes: {{ post.likes.count }}</p>
+
+{% if user.is_authenticated %}
+
+<form
+method="post"
+action="{% url 'toggle_like' post.slug %}">
+
+{% csrf_token %}
+
+<button>
+
+{% if liked %}
+
+Unlike
+
+{% else %}
+
+Like
+
+{% endif %}
+
+</button>
+
+</form>
+
+{% endif %}
+
+<hr>
+
+{{ post.content|linebreaks }}
+
+<hr>
+
+<h2>Comments</h2>
+
+{% if user.is_authenticated %}
+
+<form
+method="post"
+action="{% url 'add_comment' post.slug %}">
+
+{% csrf_token %}
+
+<textarea
+name="text"
+rows="4"
+cols="60"
+required></textarea>
+
+<br>
+
+<button>
+
+Comment
+
+</button>
+
+</form>
+
+{% else %}
+
+<p>
+
+<a href="{% url 'login' %}">
+
+Login
+
+</a>
+
+to comment.
+
+</p>
+
+{% endif %}
+
+<hr>
+
+{% for comment in comments %}
+
+<p>
+
+<strong>
+
+{{ comment.user.username }}
+
+</strong>
+
+{{ comment.created_at }}
+
+</p>
+
+<p>
+
+{{ comment.text }}
+
+</p>
+
+{% if user == comment.user or user == post.author or user.is_superuser %}
+
+<a href="{% url 'delete_comment' comment.pk %}">
+
+Delete
+
+</a>
+
+{% endif %}
+
+<hr>
+
+{% empty %}
+
+No comments yet.
+
+{% endfor %}
+
+{% endblock %}

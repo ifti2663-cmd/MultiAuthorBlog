@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>All Published Posts</h2>
+
+<form method="get">
+
+<input
+type="text"
+name="search"
+placeholder="Search..."
+value="{{ request.GET.search }}">
+
+<select name="category">
+
+<option value="">All Categories</option>
+
+{% for category in categories %}
+
+<option value="{{ category.id }}">
+{{ category.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<select name="tag">
+
+<option value="">All Tags</option>
+
+{% for tag in tags %}
+
+<option value="{{ tag.id }}">
+{{ tag.name }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<button>
+
+Search
+
+</button>
+
+</form>
+
+<hr>
+
+{% for post in posts %}
+
+{% if post.featured_image %}
+
+<img
+src="{{ post.featured_image.url }}"
+width="250">
+
+{% endif %}
+
+<h2>
+
+<a href="{% url 'post_detail' post.slug %}">
+
+{{ post.title }}
+
+</a>
+
+</h2>
+
+<p>
+
+Author:
+
+<a href="{% url 'author_profile' post.author.username %}">
+
+{{ post.author.username }}
+
+</a>
+
+</p>
+
+<p>
+
+Category:
+
+{{ post.category }}
+
+</p>
+
+<p>
+
+{{ post.content|truncatewords:25 }}
+
+</p>
+
+<hr>
+
+{% empty %}
+
+No Posts Found.
+
+{% endfor %}
+
+<div>
+
+{% if posts.has_previous %}
+
+<a href="?page={{ posts.previous_page_number }}">
+
+Previous
+
+</a>
+
+{% endif %}
+
+Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+
+{% if posts.has_next %}
+
+<a href="?page={{ posts.next_page_number }}">
+
+Next
+
+</a>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

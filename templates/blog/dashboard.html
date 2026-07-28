@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Author Dashboard</h2>
+
+<a href="{% url 'create_post' %}">
+Create New Post
+</a>
+
+<hr>
+
+{% for post in posts %}
+
+<h3>{{ post.title }}</h3>
+
+<p>Status: {{ post.status }}</p>
+
+<a href="{% url 'edit_post' post.pk %}">
+Edit
+</a>
+
+|
+
+<a href="{% url 'delete_post' post.pk %}">
+Delete
+</a>
+
+<hr>
+
+{% empty %}
+
+<p>No posts yet.</p>
+
+{% endfor %}
+
+{% endblock %}
